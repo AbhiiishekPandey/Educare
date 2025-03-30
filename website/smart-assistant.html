@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Homework Assistant - Educare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #38b000;
+            --warning: #ffd60a;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            color: var(--dark);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .feature-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .chat-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+
+        .chat-box {
+            height: 400px;
+            border: 1px solid var(--light);
+            border-radius: 15px;
+            padding: 20px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            background: var(--light);
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 18px;
+            border-radius: 18px;
+            max-width: 80%;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .user-message {
+            background: var(--primary);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+
+        .bot-message {
+            background: white;
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .chat-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid var(--light);
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .subject-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .subject-tab {
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .subject-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .subject-tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .loading-dots {
+            display: none;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .loading-dots span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            margin: 0 3px;
+            animation: bounce 1.5s infinite ease-in-out;
+        }
+
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background: white;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--dark);
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 25px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .nav-link.active {
+            color: white;
+            background: var(--primary);
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--dark);
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                Educare
+            </a>
+            <div class="nav-links" id="navLinks">
+                <a href="/website/language-learning.html" class="nav-link active">Smart Assistant</a>
+                <a href="/website/study-planner.html" class="nav-link">Study Planner</a>
+                <a href="/website/content-summarizer.html" class="nav-link">Content Summarizer</a>
+                <a href="/website/quiz-generator.html" class="nav-link">Quiz Generator</a>
+                <a href="/website/translator.html" class="nav-link">Translator</a>
+                <a href="/website/speech-to-text.html" class="nav-link">Speech to Text</a>
+            </div>
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>Smart Homework Assistant</h1>
+            <p>Your personal AI tutor that helps with assignments, provides explanations, and offers step-by-step solutions.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fas fa-clock feature-icon"></i>
+                <h3 class="feature-title">24/7 Support</h3>
+                <p class="feature-description">Get help anytime, anywhere. Our AI assistant is always ready to help you with your homework.</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fas fa-graduation-cap feature-icon"></i>
+                <h3 class="feature-title">Multiple Subjects</h3>
+                <p class="feature-description">From Math and Science to Literature and History, get expert help across all subjects.</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fas fa-lightbulb feature-icon"></i>
+                <h3 class="feature-title">Smart Solutions</h3>
+                <p class="feature-description">Receive detailed explanations and step-by-step solutions to understand concepts better.</p>
+            </div>
+        </div>
+
+        <div class="chat-section">
+            <div class="subject-tabs">
+                <button class="subject-tab active" onclick="changeSubject('all')">All Subjects</button>
+                <button class="subject-tab" onclick="changeSubject('math')">Mathematics</button>
+                <button class="subject-tab" onclick="changeSubject('science')">Science</button>
+                <button class="subject-tab" onclick="changeSubject('english')">English</button>
+                <button class="subject-tab" onclick="changeSubject('history')">History</button>
+                <button class="subject-tab" onclick="changeSubject('programming')">Programming</button>
+            </div>
+
+            <div class="chat-box" id="chat-box">
+                <div class="message bot-message">
+                    Hello! I'm your AI homework assistant. How can I help you today?
+                </div>
+            </div>
+
+            <div class="loading-dots" id="loading">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="chat-input-group">
+                <input type="text" class="chat-input" id="user-input" placeholder="Ask your question here...">
+                <button class="send-btn" onclick="sendMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                    Send
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSubject = 'all';
+
+        function changeSubject(subject) {
+            currentSubject = subject;
+            // Update active tab
+            document.querySelectorAll('.subject-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Add system message about subject change
+            addMessage(`Switched to ${subject.charAt(0).toUpperCase() + subject.slice(1)} mode. How can I help you?`, 'bot');
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const message = input.value.trim();
+            
+            if (message) {
+                addMessage(message, 'user');
+                input.value = '';
+                
+                // Show loading animation
+                document.getElementById('loading').style.display = 'flex';
+                
+                // Simulate AI response (replace with actual API call)
+                setTimeout(() => {
+                    document.getElementById('loading').style.display = 'none';
+                    getAIResponse(message);
+                }, 1000);
+            }
+        }
+
+        async function getAIResponse(question) {
+            try {
+                const response = await fetch('/api/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        prompt: `As a ${currentSubject} tutor, please help with: ${question}`
+                    })
+                });
+
+                if (!response.ok) throw new Error('Failed to get response');
+                
+                const data = await response.json();
+                addMessage(data.choices[0].message.content, 'bot');
+            } catch (error) {
+                addMessage("I apologize, but I'm having trouble connecting right now. Please try again later.", 'bot');
+                console.error('AI Response Error:', error);
+            }
+        }
+
+        function addMessage(text, sender) {
+            const chatBox = document.getElementById('chat-box');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.textContent = text;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Allow Enter key to send message
+        document.getElementById('user-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+    </script>
+</body>
+</html> 

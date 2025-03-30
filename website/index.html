@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Educare - Education & Learning Platform</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Educare - Your AI-powered educational platform for personalized learning experiences. Access smart study tools, interactive content, and innovative learning solutions.">
+    <meta name="keywords" content="education, online learning, AI education, study tools, interactive learning, personalized education">
+    <meta name="author" content="Educare">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://educare.edu/">
+    <meta property="og:title" content="Educare - Education & Learning Platform">
+    <meta property="og:description" content="Your AI-powered educational platform for personalized learning experiences.">
+    <meta property="og:image" content="https://educare.edu/assets/og-image.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://educare.edu/">
+    <meta property="twitter:title" content="Educare - Education & Learning Platform">
+    <meta property="twitter:description" content="Your AI-powered educational platform for personalized learning experiences.">
+    <meta property="twitter:image" content="https://educare.edu/assets/og-image.jpg">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Laptop Loading Animation -->
+<div class="laptop-loader" id="laptopLoader">
+    <div class="laptop">
+        <div class="laptop-screen">
+            <div class="laptop-content">
+                <div class="loader-logo">Educare<span>.edu</span></div>
+                <div class="loading-bar"></div>
+                <div class="loading-text">Loading your learning experience...</div>
+            </div>
+        </div>
+        <div class="laptop-base"></div>
+    </div>
+</div>
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container">
+        <!-- Logo -->
+        <a class="navbar-brand" href="#">
+            <span class="ms-2 fw-bold">Educare<span class="text-warning">.edu</span></span>
+        </a>
+
+        <!-- Toggle Button for Mobile View -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Links -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+                <li class="nav-item"><a class="nav-link" href="contact.html">Contact Us</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="llmDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-robot"></i> LLM
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="llmDropdown">
+                        <li>
+                            <a class="dropdown-item" href="language-learning.html">
+                                <i class="fas fa-language"></i> Language Learning
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="speech-practice.html">
+                                <i class="fas fa-microphone-alt"></i> Speech Practice
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="conversation-bot.html">
+                                <i class="fas fa-robot"></i> AI Conversation Partner
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+            <!-- Login & Get Started Buttons -->
+            <div class="nav-buttons">
+                <a href="login.html" class="btn btn-outline-light me-2">Login</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section id="home" class="hero-section">
+    <div class="emoji-bg">
+        <div class="floating-emoji">🤘</div>
+        <div class="floating-emoji">💖</div>
+        <div class="floating-emoji">😎</div>
+        <div class="floating-emoji">😶‍🌫️</div>
+        <div class="floating-emoji">🤑</div>
+        <div class="floating-emoji">🤡</div>
+        <div class="floating-emoji">🤖</div>
+        <div class="floating-emoji">🪸</div>
+        <div class="floating-emoji">🐥</div>
+        <div class="floating-emoji">⛷️</div>
+        <div class="floating-emoji">🧑</div>
+        <div class="floating-emoji">👧</div>
+        <div class="floating-emoji">👨‍🎨</div>
+        <div class="floating-emoji">👩‍🚀</div>
+    </div>
+    <div class="container">
+        <div class="hero-content">
+            <h1>Welcome to Educare</h1>
+            <p>Discover amazing learning opportunities tailored for you.</p>
+            <a href="#services" class="btn btn-primary btn-lg">Explore</a>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="about-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <!-- Left Side (Tabs) -->
+            <div class="col-lg-6">
+                <h2 class="section-heading">About Us</h2>
+                <!-- Tabs -->
+                <ul class="nav nav-tabs" id="aboutTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="company-tab" data-bs-toggle="tab" data-bs-target="#company" type="button" role="tab" aria-controls="company" aria-selected="true">Our Institution</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="mission-tab" data-bs-toggle="tab" data-bs-target="#mission" type="button" role="tab" aria-controls="mission" aria-selected="false">Our Mission</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="vision-tab" data-bs-toggle="tab" data-bs-target="#vision" type="button" role="tab" aria-controls="vision" aria-selected="false">Our Vision</button>
+                    </li>
+                </ul>
+                <!-- Tab Content -->
+                <div class="tab-content" id="aboutTabsContent">
+                    <!-- Our Company Tab -->
+                    <div class="tab-pane fade show active" id="company" role="tabpanel" aria-labelledby="company-tab">
+                        <h3>Who We Are</h3>
+                        <p>We are a leading educational institution dedicated to providing top-quality learning experiences and innovative educational solutions for students worldwide.</p>
+                        <a href="#" class="btn btn-primary">Learn More</a>
+                    </div>
+                    <!-- Our Mission Tab -->
+                    <div class="tab-pane fade" id="mission" role="tabpanel" aria-labelledby="mission-tab">
+                        <h3>Our Mission</h3>
+                        <p>Our mission is to drive educational progress by delivering creative and effective learning solutions that empower individuals to reach their full potential.</p>
+                        <a href="#" class="btn btn-primary">Learn More</a>
+                    </div>
+                    <!-- Our Vision Tab -->
+                    <div class="tab-pane fade" id="vision" role="tabpanel" aria-labelledby="vision-tab">
+                        <h3>Our Vision</h3>
+                        <p>We envision a world where quality education is accessible to all, creating limitless possibilities for a better future through knowledge and skill development.</p>
+                        <a href="#" class="btn btn-primary">Learn More</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="about-content">
+                    <h3>Our Commitment to Excellence</h3>
+                    <p>We strive to provide the best educational experience through innovative technology and personalized learning approaches.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section id="services" class="services-section">
+    <div class="container">
+        <h2 class="section-heading text-center">Our Services</h2>
+        <p class="section-subheading text-center">Experience the future of education with our AI-powered learning solutions designed to enhance your educational journey.</p>
+
+        <div class="row">
+            <!-- Service 1 -->
+            <div class="col-md-4 mb-4">
+                <div class="service-box">
+                    <i class="fas fa-robot service-icon"></i>
+                    <h4>Smart Home Assistant</h4>
+                    <p>Your personal AI study companion that helps you manage your learning schedule, set reminders, and get instant answers to your questions.</p>
+                    <a href="#" class="btn btn-outline-primary">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Service 2 -->
+            <div class="col-md-4 mb-4">
+                <div class="service-box">
+                    <i class="fas fa-calendar-check service-icon"></i>
+                    <h4>Interactive Study Planner</h4>
+                    <p>AI-driven study schedule optimization that adapts to your learning style and helps you achieve your academic goals efficiently.</p>
+                    <a href="study-planner.html" class="btn btn-outline-primary">Try Now</a>
+                </div>
+            </div>
+
+            <!-- Service 3 -->
+            <div class="col-md-4 mb-4">
+                <div class="service-box">
+                    <i class="fas fa-file-alt service-icon"></i>
+                    <h4>AI-Powered Content Summarization</h4>
+                    <p>Transform lengthy educational materials into concise, easy-to-understand summaries using advanced AI technology.</p>
+                    <a href="text-summarizer.html" class="btn btn-outline-primary">Try Now</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Service 4 -->
+            <div class="col-md-4 mb-4">
+                <div class="service-box">
+                    <i class="fas fa-question-circle"></i>
+                    <h3>AI Quiz Generator</h3>
+                    <p>Test your knowledge with AI-generated quizzes on any topic. Get instant feedback and personalized learning suggestions.</p>
+                    <a href="quiz-generator.html" class="btn btn-outline-primary">Try Now</a>
+                </div>
+            </div>
+
+            <!-- Service 5 -->
+            <div class="col-md-4 mb-4">
+                <div class="service-box">
+                    <i class="fas fa-language service-icon"></i>
+                    <h4>AI-Based Translator & Language Learning</h4>
+                    <p>Advanced language learning tools with real-time translation and personalized language practice sessions.</p>
+                    <a href="#" class="btn btn-outline-primary">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Service 6 -->
+            <div class="col-md-4 mb-4">
+                <div class="service-box">
+                    <i class="fas fa-microphone service-icon"></i>
+                    <h4>Speech to Text</h4>
+                    <p>Convert your spoken words into text instantly. Perfect for note-taking, transcription, and accessibility needs.</p>
+                    <a href="#" class="btn btn-outline-primary">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Projects Section -->
+<section id="projects" class="projects-section">
+    <div class="container">
+        <h2 class="section-heading text-center">Our Projects</h2>
+        <!-- Tabs -->
+        <ul class="nav nav-tabs justify-content-center" id="projectTabs">
+            <li class="nav-item">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target=".all-projects">All</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target=".app-projects">E-Learning</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target=".branding-projects">Workshops</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target=".book-projects">Publications</button>
+            </li>
+        </ul>
+
+        <!-- Project Grid -->
+        <div class="tab-content project-container">
+            <div class="row g-4 mt-3">
+                <!-- Project 1 -->
+                <div class="col-md-4 all-projects app-projects">
+                    <div class="project-item">
+                        <div class="project-content">
+                            <h4>Online Learning Platform</h4>
+                            <p>Accessible education through interactive digital experiences.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Project 2 -->
+                <div class="col-md-4 all-projects branding-projects">
+                    <div class="project-item">
+                        <div class="project-content">
+                            <h4>Career Development Workshop</h4>
+                            <p>Hands-on workshops for professional growth.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Project 3 -->
+                <div class="col-md-4 all-projects book-projects">
+                    <div class="project-item">
+                        <div class="project-content">
+                            <h4>Educational Journal</h4>
+                            <p>Research and insights for modern education.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="contact-section">
+    <div class="container">
+        <h2 class="section-heading text-center">Contact Us</h2>
+        <div class="row">
+            <!-- Contact Form -->
+            <div class="col-md-6">
+                <div class="contact-form">
+                    <h4 class="text-center mb-4">Send Us a Message</h4>
+                    <form id="contactForm" novalidate>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Your Name</label>
+                            <input type="text" class="form-control" id="name" name="name" 
+                                   placeholder="Enter your name" required minlength="2" maxlength="50">
+                            <div class="invalid-feedback">Please enter your name (2-50 characters)</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Your Email</label>
+                            <input type="email" class="form-control" id="email" name="email" 
+                                   placeholder="Enter your email" required>
+                            <div class="invalid-feedback">Please enter a valid email address</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject</label>
+                            <input type="text" class="form-control" id="subject" name="subject" 
+                                   placeholder="Enter subject" required minlength="5" maxlength="100">
+                            <div class="invalid-feedback">Please enter a subject (5-100 characters)</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Your Message</label>
+                            <textarea class="form-control" id="message" name="message" 
+                                      rows="4" placeholder="Write your message" required minlength="10" maxlength="1000"></textarea>
+                            <div class="invalid-feedback">Please enter a message (10-1000 characters)</div>
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe">
+                            <label class="form-check-label" for="rememberMe">Remember Me</label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">
+                            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="col-md-6">
+                <div class="contact-info mb-4">
+                    <h4>Get In Touch</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Education Street, Learning City</p>
+                    <p><i class="fas fa-envelope"></i> info@educare.com</p>
+                    <p><i class="fas fa-phone"></i> +123 456 7890</p>
+                    <div class="social-links mt-3">
+                        <a href="#" class="me-3"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-linkedin fa-lg"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <!-- About Section -->
+            <div class="col-md-4 mb-4">
+                <h5>About Educare</h5>
+                <p>We provide high-quality education with a focus on innovation and excellence. Stay connected for updates and insights.</p>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-md-4 mb-4">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#services">Our Services</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#contact">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <!-- Newsletter -->
+            <div class="col-md-4 mb-4">
+                <h5>Subscribe to Newsletter</h5>
+                <form id="newsletterForm" class="mt-3" novalidate>
+                    <div class="input-group mb-3">
+                        <input type="email" class="form-control" id="newsletterEmail" 
+                               placeholder="Your email" required aria-label="Newsletter email">
+                        <button class="btn btn-primary" type="submit">
+                            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                            Subscribe
+                        </button>
+                    </div>
+                    <div class="invalid-feedback">Please enter a valid email address</div>
+                </form>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- Copyright -->
+        <div class="text-center">
+            <p class="mb-0">&copy; 2025 Educare. All Rights Reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Chat Widget -->
+<div class="chat-widget" id="chatWidget">
+    <div class="chat-header">
+        <h5>Buddy 🤘</h5>
+        <button type="button" class="btn-close" id="closeChat" aria-label="Close chat"></button>
+    </div>
+    <div class="chat-messages" id="chatMessages" role="log" aria-live="polite">
+        <div class="message bot">
+            Hello! I'm your AI assistant. How can I help you today?
+        </div>
+    </div>
+    <div class="chat-input">
+        <textarea id="userInput" placeholder="Type your message..." rows="1" aria-label="Message input"></textarea>
+        <button id="sendMessage" class="btn btn-primary" aria-label="Send message">
+            Send
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+</div>
+
+<!-- Chat Toggle Button -->
+<button class="chat-toggle" id="chatToggle">
+    <i class="fas fa-comments"></i>
+    <span class="notification-badge" id="messageCount">0</span>
+</button>
+
+<!-- Voice Assistant Modal -->
+<div class="modal fade" id="voiceAssistantModal" tabindex="-1" aria-labelledby="voiceAssistantModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="voiceAssistantModalLabel">Voice Assistant</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="speech-box">
+                    <textarea id="output" placeholder="Click the mic and start speaking..." readonly></textarea>
+                    <button id="speechButton" class="mic-button">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                </div>
+                <textarea id="editableOutput" class="editable-box" placeholder="Edit your text here..."></textarea>
+                <button id="speakButton" class="speak-button">
+                    <i class="fas fa-volume-up"></i> Listen
+                </button>
+                <p class="status" id="statusMessage"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Content Summarization Modal -->
+<div class="modal fade" id="summarizationModal" tabindex="-1" aria-labelledby="summarizationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="summarizationModalLabel">AI Content Summarization</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="inputText" class="form-label">Input Text</label>
+                            <textarea id="inputText" class="form-control" rows="10" placeholder="Paste your text here..."></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="summaryOutput" class="form-label">Summary</label>
+                            <textarea id="summaryOutput" class="form-control" rows="10" readonly></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="autoSummarize" checked>
+                            <label class="form-check-label" for="autoSummarize">
+                                Auto-summarize on input
+                            </label>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary" id="summarizeBtn">
+                                <i class="fas fa-magic"></i> Summarize
+                            </button>
+                            <button type="button" class="btn btn-outline-primary" id="copySummaryBtn">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <div class="progress d-none" id="summarizationProgress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <div id="summarizationStatus" class="text-muted small"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS Bundle (Includes Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Custom JS -->
+<script src="script.js"></script>
+<!-- Voice Assistant JS -->
+<script src="voice.js"></script>
+<!-- Content Summarization JS -->
+<script src="summarizer.js"></script>
+
+</body>
+</html>

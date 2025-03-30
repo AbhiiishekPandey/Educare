@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Text Summarizer - Educare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #38b000;
+            --warning: #ffaa00;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Floating Emojis */
+        .floating-emoji {
+            position: fixed;
+            font-size: 2rem;
+            pointer-events: none;
+            z-index: 0;
+            animation: float 6s ease-in-out infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+            100% { transform: translateY(0) rotate(360deg); }
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-section {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeIn 1s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--secondary);
+            margin-bottom: 30px;
+        }
+        
+        .input-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .search-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            animation: slideIn 1s ease-out;
+            margin-bottom: 30px;
+        }
+        
+        .search-options {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .search-option {
+            padding: 8px 15px;
+            border: 2px solid var(--light);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            color: var(--secondary);
+            background: var(--light);
+        }
+        
+        .search-option.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .search-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .search-container {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid var(--light);
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .search-button {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .search-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-results {
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .search-result-item {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .search-result-item:hover {
+            background: rgba(67, 97, 238, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .search-result-item .highlight {
+            background: rgba(67, 97, 238, 0.2);
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+        
+        .search-result-item .topic-tag {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        .search-result-item .relevance-score {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: var(--secondary);
+            font-size: 0.8rem;
+        }
+        
+        .no-results {
+            text-align: center;
+            color: var(--secondary);
+            padding: 20px;
+        }
+        
+        .upload-section, .text-input-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            animation: slideIn 1s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        .upload-box {
+            border: 2px dashed var(--primary);
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--light);
+        }
+        
+        .upload-box.dragover {
+            background: rgba(67, 97, 238, 0.1);
+            border-color: var(--accent);
+        }
+        
+        .upload-box i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .upload-box p {
+            margin: 10px 0;
+            color: var(--secondary);
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .upload-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .upload-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .pdf-preview {
+            margin-top: 20px;
+        }
+        
+        .pdf-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 8px;
+            color: var(--secondary);
+        }
+        
+        .pdf-info i {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .page-count {
+            margin-left: auto;
+            font-size: 0.9rem;
+            color: var(--accent);
+        }
+        
+        .input-group {
+            position: relative;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            border: 2px solid var(--light);
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            resize: vertical;
+            transition: all 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .word-count {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: var(--light);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: var(--secondary);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .summarize-button, .clear-button {
+            flex: 1;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .summarize-button {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+        
+        .clear-button {
+            background: var(--light);
+            color: var(--secondary);
+        }
+        
+        .summarize-button:hover, .clear-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            display: none;
+            animation: slideIn 1s ease-out;
+        }
+        
+        .summary-content {
+            margin-bottom: 30px;
+            line-height: 1.8;
+            color: var(--dark);
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding-top: 20px;
+            border-top: 2px solid var(--light);
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--secondary);
+        }
+        
+        .stat-item i {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .key-concepts {
+            margin-top: 20px;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 8px;
+        }
+        
+        .key-concept-item {
+            display: inline-block;
+            margin: 5px;
+            padding: 5px 10px;
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: 15px;
+            font-size: 0.9rem;
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .key-concept-item:hover {
+            background: rgba(67, 97, 238, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .summary-suggestions {
+            margin-top: 20px;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 8px;
+            display: none;
+        }
+
+        .summary-suggestion-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .summary-suggestion-item h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .summary-suggestion-item h4 i {
+            color: var(--accent);
+        }
+
+        .suggestion-content {
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .suggestion-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .suggestion-action {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .suggestion-action.add {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+        }
+
+        .suggestion-action.remove {
+            background: rgba(255, 0, 0, 0.1);
+            color: #ff0000;
+        }
+
+        .suggestion-action:hover {
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .input-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+        }
+
+        /* Animation Keyframes */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        @keyframes fadeInScale {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent }
+        }
+
+        /* Enhanced Animation Classes */
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        .animate-slide-up {
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .animate-shimmer {
+            background: linear-gradient(90deg, var(--light) 25%, rgba(255,255,255,0.5) 50%, var(--light) 75%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite linear;
+        }
+
+        .animate-fade-in-scale {
+            animation: fadeInScale 0.5s ease-out;
+        }
+
+        .animate-typing {
+            animation: typing 3.5s steps(40, end);
+            border-right: 2px solid var(--primary);
+            animation: typing 3.5s steps(40, end), blink .75s step-end infinite;
+        }
+
+        /* Enhanced UI Elements */
+        .processing-indicator {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .processing-indicator.active {
+            display: block;
+            animation: fadeInScale 0.5s ease-out;
+        }
+
+        .processing-dots {
+            display: inline-flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .processing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: pulse 1s infinite;
+        }
+
+        .processing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .processing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .result-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease-out;
+        }
+
+        .result-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .summary-content {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .summary-content::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transform: translateX(-100%);
+            animation: shimmer 2s infinite;
+        }
+
+        .stat-item {
+            transition: transform 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .search-result-item {
+            transition: all 0.3s ease;
+        }
+
+        .search-result-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .key-concept-item {
+            transition: all 0.3s ease;
+        }
+
+        .key-concept-item:hover {
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        /* Floating Elements Animation */
+        .floating-element {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.6;
+            font-size: 1.2rem;
+            animation: floatElement 8s ease-in-out infinite;
+        }
+
+        @keyframes floatElement {
+            0% { 
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 0.6;
+            }
+            25% { 
+                transform: translate(20px, -20px) rotate(90deg);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: translate(0, -40px) rotate(180deg);
+                opacity: 0.6;
+            }
+            75% { 
+                transform: translate(-20px, -20px) rotate(270deg);
+                opacity: 0.8;
+            }
+            100% { 
+                transform: translate(0, 0) rotate(360deg);
+                opacity: 0.6;
+            }
+        }
+
+        .floating-element.keyword {
+            color: var(--primary);
+        }
+
+        .floating-element.main-idea {
+            color: var(--secondary);
+        }
+
+        .floating-element.concept {
+            color: var(--accent);
+        }
+
+        .floating-element.summary {
+            color: var(--success);
+        }
+
+        .floating-element.example {
+            color: var(--warning);
+        }
+
+        /* Floating Elements Container */
+        .floating-elements-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <!-- Add floating elements container -->
+    <div class="floating-elements-container" id="floatingElements"></div>
+
+    <a href="index.html" class="back-home">
+        <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+
+    <div class="container">
+        <div class="hero-section">
+            <h1>Smart Text Summarizer</h1>
+            <p class="subtitle">Transform long texts into concise summaries</p>
+        </div>
+
+        <div class="search-section">
+            <h2>Content Analysis for Summarization</h2>
+            <div class="search-options">
+                <div class="search-option active" data-type="all">All Content</div>
+                <div class="search-option" data-type="main-ideas">Main Ideas</div>
+                <div class="search-option" data-type="key-concepts">Key Concepts</div>
+                <div class="search-option" data-type="examples">Examples</div>
+                <div class="search-option" data-type="conclusions">Conclusions</div>
+                <div class="search-option" data-type="important">Important Points</div>
+            </div>
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search for topics, concepts, or keywords to analyze for summarization...">
+                <button id="searchButton" class="search-button">
+                    <i class="fas fa-search"></i> Analyze
+                </button>
+            </div>
+            <div id="searchResults" class="search-results"></div>
+            <div id="keyConcepts" class="key-concepts"></div>
+            <div id="summarySuggestions" class="summary-suggestions"></div>
+        </div>
+
+        <div class="input-section">
+            <div class="upload-section">
+                <h2>Upload PDF</h2>
+                <div class="upload-box" id="uploadBox">
+                    <i class="fas fa-file-pdf"></i>
+                    <p>Drag and drop your PDF here or</p>
+                    <input type="file" id="pdfInput" accept=".pdf" class="file-input">
+                    <label for="pdfInput" class="upload-button">Choose PDF</label>
+                </div>
+                <div id="pdfPreview" class="pdf-preview"></div>
+            </div>
+
+            <div class="text-input-section">
+                <h2>Or Enter Text</h2>
+                <div class="input-group">
+                    <textarea id="textInput" placeholder="Enter your text here..."></textarea>
+                    <div class="word-count">Words: <span id="wordCount">0</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button id="summarizeBtn" class="summarize-button">
+                <i class="fas fa-magic"></i> Generate Summary
+            </button>
+            <button id="clearBtn" class="clear-button">
+                <i class="fas fa-trash"></i> Clear
+            </button>
+        </div>
+
+        <div class="result-section" id="resultSection">
+            <h2>Summary</h2>
+            <div class="processing-indicator" id="processingIndicator">
+                <i class="fas fa-magic fa-2x"></i>
+                <p>Processing your text...</p>
+                <div class="processing-dots">
+                    <div class="processing-dot"></div>
+                    <div class="processing-dot"></div>
+                    <div class="processing-dot"></div>
+                </div>
+            </div>
+            <div class="summary-content" id="summaryContent"></div>
+            <div class="stats">
+                <div class="stat-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Original Words: <span id="originalWords">0</span></span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-compress-alt"></i>
+                    <span>Summary Words: <span id="summaryWords">0</span></span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-percentage"></i>
+                    <span>Reduction: <span id="reduction">0</span>%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- PDF.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        // Initialize PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadBox = document.getElementById('uploadBox');
+            const pdfInput = document.getElementById('pdfInput');
+            const pdfPreview = document.getElementById('pdfPreview');
+            const textInput = document.getElementById('textInput');
+            const wordCount = document.getElementById('wordCount');
+            const summarizeBtn = document.getElementById('summarizeBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const resultSection = document.getElementById('resultSection');
+            const summaryContent = document.getElementById('summaryContent');
+            const originalWords = document.getElementById('originalWords');
+            const summaryWords = document.getElementById('summaryWords');
+            const reduction = document.getElementById('reduction');
+            const searchInput = document.getElementById('searchInput');
+            const searchButton = document.getElementById('searchButton');
+            const searchResults = document.getElementById('searchResults');
+            const searchOptions = document.querySelectorAll('.search-option');
+            const keyConcepts = document.getElementById('keyConcepts');
+            const summarySuggestions = document.getElementById('summarySuggestions');
+            const processingIndicator = document.getElementById('processingIndicator');
+            let currentText = '';
+            let currentSearchType = 'all';
+            let selectedSentences = new Set();
+
+            // Drag and drop functionality
+            uploadBox.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadBox.classList.add('dragover');
+            });
+
+            uploadBox.addEventListener('dragleave', () => {
+                uploadBox.classList.remove('dragover');
+            });
+
+            uploadBox.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadBox.classList.remove('dragover');
+                const file = e.dataTransfer.files[0];
+                if (file && file.type === 'application/pdf') {
+                    handlePDFFile(file);
+                } else {
+                    alert('Please upload a PDF file');
+                }
+            });
+
+            pdfInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    handlePDFFile(file);
+                }
+            });
+
+            // Handle PDF file
+            async function handlePDFFile(file) {
+                try {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+                    
+                    // Show PDF preview
+                    pdfPreview.innerHTML = `
+                        <div class="pdf-info">
+                            <i class="fas fa-file-pdf"></i>
+                            <span>${file.name}</span>
+                            <span class="page-count">${pdf.numPages} pages</span>
+                        </div>
+                    `;
+
+                    // Extract text from all pages
+                    let fullText = '';
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const textContent = await page.getTextContent();
+                        const pageText = textContent.items.map(item => item.str).join(' ');
+                        fullText += pageText + '\n';
+                    }
+
+                    // Set the extracted text to the textarea
+                    textInput.value = fullText;
+                    updateWordCount();
+                } catch (error) {
+                    console.error('Error processing PDF:', error);
+                    alert('Error processing PDF file. Please try again.');
+                }
+            }
+
+            // Word count update
+            textInput.addEventListener('input', () => {
+                currentText = textInput.value;
+                updateWordCount();
+            });
+
+            function updateWordCount() {
+                const words = textInput.value.trim().split(/\s+/).filter(word => word.length > 0);
+                wordCount.textContent = words.length;
+            }
+
+            // Floating elements functionality
+            const floatingElements = document.getElementById('floatingElements');
+            const floatingIcons = {
+                keyword: ['fa-key', 'fa-tag', 'fa-hashtag'],
+                'main-idea': ['fa-lightbulb', 'fa-star', 'fa-bullseye'],
+                concept: ['fa-book', 'fa-brain', 'fa-puzzle-piece'],
+                summary: ['fa-file-alt', 'fa-compress-alt', 'fa-clipboard-list'],
+                example: ['fa-list-ul', 'fa-list-ol', 'fa-check-circle']
+            };
+
+            function createFloatingElement(type) {
+                const element = document.createElement('div');
+                element.className = `floating-element ${type}`;
+                const iconIndex = Math.floor(Math.random() * floatingIcons[type].length);
+                element.innerHTML = `<i class="fas ${floatingIcons[type][iconIndex]}"></i>`;
+                
+                // Random position
+                element.style.left = Math.random() * 100 + '%';
+                element.style.top = Math.random() * 100 + '%';
+                
+                // Random animation duration and delay
+                const duration = 6 + Math.random() * 4;
+                element.style.animationDuration = `${duration}s`;
+                element.style.animationDelay = `${Math.random() * 2}s`;
+                
+                floatingElements.appendChild(element);
+                
+                // Remove element after animation
+                setTimeout(() => {
+                    element.remove();
+                }, duration * 1000);
+            }
+
+            // Create floating elements periodically
+            function startFloatingElements() {
+                const types = Object.keys(floatingIcons);
+                setInterval(() => {
+                    const type = types[Math.floor(Math.random() * types.length)];
+                    createFloatingElement(type);
+                }, 2000);
+            }
+
+            // Start floating elements when text is entered
+            textInput.addEventListener('input', () => {
+                if (textInput.value.trim().length > 0) {
+                    startFloatingElements();
+                }
+            });
+
+            // Enhanced summarize button click with floating elements
+            summarizeBtn.addEventListener('click', async () => {
+                const text = textInput.value.trim();
+                if (text.length < 10) {
+                    alert('Please enter at least 10 words to generate a summary.');
+                    return;
+                }
+
+                // Show processing indicator
+                resultSection.style.display = 'block';
+                processingIndicator.classList.add('active');
+                summaryContent.style.display = 'none';
+
+                // Simulate processing delay
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                let summary;
+                if (selectedSentences.size > 0) {
+                    summary = Array.from(selectedSentences).join('. ') + '.';
+                } else {
+                    const sentences = text.split(/[.!?]+/).filter(sentence => sentence.trim().length > 0);
+                    summary = generateSummary(sentences);
+                }
+                
+                // Hide processing indicator and show results
+                processingIndicator.classList.remove('active');
+                summaryContent.style.display = 'block';
+                summaryContent.innerHTML = summary;
+                resultSection.classList.add('visible');
+                
+                // Update statistics with animation
+                const originalWordCount = text.split(/\s+/).filter(word => word.length > 0).length;
+                const summaryWordCount = summary.split(/\s+/).filter(word => word.length > 0).length;
+                const reductionPercentage = ((originalWordCount - summaryWordCount) / originalWordCount * 100).toFixed(1);
+                
+                // Animate statistics
+                animateValue(originalWords, 0, originalWordCount, 1000);
+                animateValue(summaryWords, 0, summaryWordCount, 1000);
+                animateValue(reduction, 0, reductionPercentage, 1000);
+
+                // Create floating elements for summary generation
+                for (let i = 0; i < 5; i++) {
+                    setTimeout(() => {
+                        createFloatingElement('summary');
+                    }, i * 300);
+                }
+            });
+
+            // Clear button click
+            clearBtn.addEventListener('click', () => {
+                textInput.value = '';
+                pdfInput.value = '';
+                pdfPreview.innerHTML = '';
+                resultSection.style.display = 'none';
+                updateWordCount();
+                searchInput.value = '';
+                searchResults.style.display = 'none';
+                keyConcepts.style.display = 'none';
+                summarySuggestions.style.display = 'none';
+                floatingElements.innerHTML = '';
+            });
+
+            // Generate summary function
+            function generateSummary(sentences) {
+                if (sentences.length <= 3) return sentences.join('. ') + '.';
+                
+                // Keep first and last sentences
+                const summary = [sentences[0]];
+                
+                // Calculate sentence scores based on length and position
+                const sentenceScores = sentences.slice(1, -1).map((sentence, index) => {
+                    const words = sentence.trim().split(/\s+/).length;
+                    const position = index + 1;
+                    const score = words * (1 - position / sentences.length);
+                    return { sentence, score };
+                });
+                
+                // Sort by score and take top sentences
+                sentenceScores.sort((a, b) => b.score - a.score);
+                const topSentences = sentenceScores.slice(0, 3).map(item => item.sentence);
+                
+                // Combine sentences in original order
+                summary.push(...topSentences);
+                summary.push(sentences[sentences.length - 1]);
+                
+                return summary.join('. ') + '.';
+            }
+
+            // Search options click handler
+            searchOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    searchOptions.forEach(opt => opt.classList.remove('active'));
+                    option.classList.add('active');
+                    currentSearchType = option.dataset.type;
+                    performSearch();
+                });
+            });
+
+            // Enhanced search functionality
+            function performSearch() {
+                const searchTerm = searchInput.value.trim().toLowerCase();
+                if (!searchTerm) {
+                    searchResults.style.display = 'none';
+                    keyConcepts.style.display = 'none';
+                    summarySuggestions.style.display = 'none';
+                    return;
+                }
+
+                const sentences = currentText.split(/[.!?]+/).filter(sentence => sentence.trim().length > 0);
+                let matches = [];
+
+                // Filter matches based on search type
+                switch(currentSearchType) {
+                    case 'main-ideas':
+                        matches = sentences.filter(sentence => 
+                            sentence.toLowerCase().includes(searchTerm) &&
+                            (sentence.length > 20) // Longer sentences often contain main ideas
+                        );
+                        break;
+                    case 'key-concepts':
+                        matches = sentences.filter(sentence => 
+                            sentence.toLowerCase().includes(searchTerm) &&
+                            (sentence.includes('is') || sentence.includes('means') || sentence.includes('refers to'))
+                        );
+                        break;
+                    case 'examples':
+                        matches = sentences.filter(sentence => 
+                            sentence.toLowerCase().includes(searchTerm) &&
+                            (sentence.includes('for example') || sentence.includes('such as') || sentence.includes('like'))
+                        );
+                        break;
+                    case 'conclusions':
+                        matches = sentences.filter(sentence => 
+                            sentence.toLowerCase().includes(searchTerm) &&
+                            (sentence.includes('therefore') || sentence.includes('thus') || sentence.includes('conclusion'))
+                        );
+                        break;
+                    case 'important':
+                        matches = sentences.filter(sentence => 
+                            sentence.toLowerCase().includes(searchTerm) &&
+                            (sentence.includes('important') || sentence.includes('significant') || 
+                             sentence.includes('crucial') || sentence.includes('essential'))
+                        );
+                        break;
+                    default:
+                        matches = sentences.filter(sentence => 
+                            sentence.toLowerCase().includes(searchTerm)
+                        );
+                }
+
+                if (matches.length > 0) {
+                    // Create floating elements based on search type
+                    const type = currentSearchType.replace('-', '');
+                    for (let i = 0; i < 3; i++) {
+                        setTimeout(() => {
+                            createFloatingElement(type);
+                        }, i * 500);
+                    }
+
+                    const resultsHTML = matches.map((sentence, index) => {
+                        const highlightedSentence = sentence.replace(
+                            new RegExp(searchTerm, 'gi'),
+                            match => `<span class="highlight">${match}</span>`
+                        );
+                        const relevanceScore = calculateRelevanceScore(sentence, searchTerm);
+                        const isSelected = selectedSentences.has(sentence);
+                        return `
+                            <div class="search-result-item" style="animation-delay: ${index * 0.1}s">
+                                <span class="topic-tag">${currentSearchType.replace('-', ' ')}</span>
+                                ${highlightedSentence}
+                                <span class="relevance-score">Relevance: ${relevanceScore}%</span>
+                                <div class="suggestion-actions">
+                                    <span class="suggestion-action ${isSelected ? 'remove' : 'add'}" 
+                                          onclick="toggleSentence('${sentence}')">
+                                        <i class="fas ${isSelected ? 'fa-minus' : 'fa-plus'}"></i>
+                                        ${isSelected ? 'Remove from Summary' : 'Add to Summary'}
+                                    </span>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    searchResults.innerHTML = resultsHTML;
+                    searchResults.style.display = 'block';
+                    
+                    // Animate search results
+                    const resultItems = searchResults.querySelectorAll('.search-result-item');
+                    resultItems.forEach((item, index) => {
+                        item.style.animation = 'slideUp 0.5s ease-out';
+                        item.style.animationDelay = `${index * 0.1}s`;
+                    });
+                    
+                    // Extract and display key concepts
+                    const concepts = extractKeyConcepts(matches);
+                    displayKeyConcepts(concepts);
+
+                    // Generate summary suggestions
+                    generateSummarySuggestions(matches);
+                } else {
+                    searchResults.innerHTML = `
+                        <div class="no-results">
+                            <i class="fas fa-search"></i>
+                            <p>No matches found</p>
+                        </div>
+                    `;
+                    searchResults.style.display = 'block';
+                    keyConcepts.style.display = 'none';
+                    summarySuggestions.style.display = 'none';
+                }
+            }
+
+            function calculateRelevanceScore(sentence, searchTerm) {
+                const words = sentence.toLowerCase().split(/\s+/);
+                const searchWords = searchTerm.toLowerCase().split(/\s+/);
+                const matches = searchWords.filter(word => words.includes(word)).length;
+                return Math.round((matches / searchWords.length) * 100);
+            }
+
+            function extractKeyConcepts(sentences) {
+                const concepts = new Set();
+                sentences.forEach(sentence => {
+                    // Look for key concept indicators
+                    const matches = sentence.match(/(?:is|means|refers to|called|known as)\s+([^.,]+)/gi);
+                    if (matches) {
+                        matches.forEach(match => {
+                            const concept = match.split(/\s+(?:is|means|refers to|called|known as)\s+/i)[1];
+                            if (concept) concepts.add(concept.trim());
+                        });
+                    }
+                });
+                return Array.from(concepts);
+            }
+
+            function displayKeyConcepts(concepts) {
+                if (concepts.length > 0) {
+                    const conceptsHTML = `
+                        <h3>Key Concepts Found:</h3>
+                        ${concepts.map(concept => `
+                            <span class="key-concept-item" onclick="searchForConcept('${concept}')">
+                                ${concept}
+                            </span>
+                        `).join('')}
+                    `;
+                    keyConcepts.innerHTML = conceptsHTML;
+                    keyConcepts.style.display = 'block';
+                } else {
+                    keyConcepts.style.display = 'none';
+                }
+            }
+
+            function generateSummarySuggestions(matches) {
+                if (matches.length > 0) {
+                    const suggestionsHTML = `
+                        <h3>Summary Suggestions</h3>
+                        <div class="summary-suggestion-item">
+                            <h4><i class="fas fa-lightbulb"></i> Suggested Summary Structure</h4>
+                            <div class="suggestion-content">
+                                <p>Based on the search results, consider organizing your summary as follows:</p>
+                                <ol>
+                                    <li>Start with the main idea (${matches[0].substring(0, 50)}...)</li>
+                                    <li>Include key concepts and definitions</li>
+                                    <li>Add relevant examples</li>
+                                    <li>Conclude with important findings</li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="summary-suggestion-item">
+                            <h4><i class="fas fa-chart-bar"></i> Content Analysis</h4>
+                            <div class="suggestion-content">
+                                <p>Found ${matches.length} relevant sentences:</p>
+                                <ul>
+                                    <li>${matches.length} sentences containing "${searchInput.value}"</li>
+                                    <li>${matches.filter(s => s.length > 20).length} main ideas</li>
+                                    <li>${matches.filter(s => s.includes('for example')).length} examples</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                    summarySuggestions.innerHTML = suggestionsHTML;
+                    summarySuggestions.style.display = 'block';
+                }
+            }
+
+            // Function to toggle sentence selection
+            window.toggleSentence = function(sentence) {
+                if (selectedSentences.has(sentence)) {
+                    selectedSentences.delete(sentence);
+                } else {
+                    selectedSentences.add(sentence);
+                }
+                performSearch(); // Refresh the display
+            };
+
+            // Function to search for a concept
+            window.searchForConcept = function(concept) {
+                searchInput.value = concept;
+                performSearch();
+            };
+
+            // Function to scroll to text in textarea
+            window.scrollToText = function(sentence) {
+                const textarea = textInput;
+                const text = textarea.value;
+                const position = text.indexOf(sentence);
+                
+                if (position !== -1) {
+                    textarea.focus();
+                    textarea.setSelectionRange(position, position + sentence.length);
+                    textarea.scrollTop = textarea.scrollHeight * (position / text.length);
+                }
+            };
+
+            // Function to animate numeric values
+            function animateValue(element, start, end, duration) {
+                let startTimestamp = null;
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    const currentValue = Math.round(progress * (end - start) + start);
+                    element.textContent = currentValue;
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    }
+                };
+                window.requestAnimationFrame(step);
+            }
+        });
+    </script>
+</body>
+</html> 

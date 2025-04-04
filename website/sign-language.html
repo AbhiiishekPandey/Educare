@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Language Recognition - Educare</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="sign-language.css">
+    
+    <!-- MediaPipe Hands -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+</head>
+<body>
+    <!-- Navbar (will be consistent with other pages) -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <span class="ms-2 fw-bold">Educare<span class="text-warning">.edu</span></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact Us</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="llmDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-robot"></i> LLM
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="llmDropdown">
+                            <li><a class="dropdown-item" href="language-learning.html"><i class="fas fa-language"></i> Language Learning</a></li>
+                            <li><a class="dropdown-item" href="speech-practice.html"><i class="fas fa-microphone-alt"></i> Speech Practice</a></li>
+                            <li><a class="dropdown-item" href="conversation-bot.html"><i class="fas fa-robot"></i> AI Conversation Partner</a></li>
+                            <li><a class="dropdown-item" href="sign-language.html"><i class="fas fa-hand-paper"></i> Sign Language</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="nav-buttons">
+                    <a href="login.html" class="btn btn-outline-light me-2">Login</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-5 pt-5">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <h1 class="text-center mb-4">Sign Language Recognition</h1>
+                
+                <!-- Video Container -->
+                <div class="video-container mb-4">
+                    <video id="video" autoplay playsinline></video>
+                    <canvas id="canvas"></canvas>
+                </div>
+                
+                <!-- Gesture Display -->
+                <div class="gesture-display text-center p-4 mb-4">
+                    <h2>Recognized Gesture: <span id="gesture-text" class="text-warning">None</span></h2>
+                    <p class="lead">Meaning: <span id="meaning-text">-</span></p>
+                </div>
+                
+                <!-- Controls -->
+                <div class="text-center mb-4">
+                    <button id="startBtn" class="btn btn-primary me-2">
+                        <i class="fas fa-play"></i> Start Recognition
+                    </button>
+                    <button id="stopBtn" class="btn btn-danger" disabled>
+                        <i class="fas fa-stop"></i> Stop Recognition
+                    </button>
+                </div>
+                
+                <!-- Gesture Guide -->
+                <div class="gesture-guide">
+                    <h3 class="mb-3">Gesture Guide</h3>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5>Hello 👋</h5>
+                                    <p>Extend all fingers and thumb, wave hand</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5>Thanks 🙏</h5>
+                                    <p>Extend all fingers, keep thumb close to palm</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5>Yes 👍</h5>
+                                    <p>Make fist, extend thumb upward</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5>No 👎</h5>
+                                    <p>Extend index finger, keep others closed</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5>Love You 🤟</h5>
+                                    <p>Extend thumb, index, and pinky</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5>Call Me 🤙</h5>
+                                    <p>Extend thumb and pinky</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="sign-language.js"></script>
+</body>
+</html> 

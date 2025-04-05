@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zoom Meeting Integration</title>
+    <style>
+        /* CSS Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .zoom-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: 30px;
+        }
+        
+        h1 {
+            color: #2d8cff;
+            text-align: center;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #2d8cff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            background: #1a73e8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-join {
+            background: #2d8cff;
+            display: block;
+            margin: 20px auto;
+            width: 200px;
+        }
+        
+        .btn-schedule {
+            background: #34a853;
+            margin-right: 10px;
+        }
+        
+        .btn-start {
+            background: #ea4335;
+        }
+        
+        .meeting-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #2d8cff;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 600px) {
+            .btn-container {
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .btn-schedule, .btn-start {
+                margin-right: 0;
+                margin-bottom: 10px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="zoom-container">
+        <h1>Zoom Meeting Center</h1>
+        
+        <div class="btn-container">
+            <button id="scheduleBtn" class="btn btn-schedule">Schedule New Meeting</button>
+            <button id="startBtn" class="btn btn-start">Start Instant Meeting</button>
+        </div>
+        
+        <div id="scheduleForm" class="hidden">
+            <div class="form-group">
+                <label for="meetingTopic">Meeting Topic</label>
+                <input type="text" id="meetingTopic" placeholder="Enter meeting topic">
+            </div>
+            
+            <div class="form-group">
+                <label for="meetingDate">Date</label>
+                <input type="date" id="meetingDate">
+            </div>
+            
+            <div class="form-group">
+                <label for="meetingTime">Time</label>
+                <input type="time" id="meetingTime">
+            </div>
+            
+            <div class="form-group">
+                <label for="meetingDuration">Duration (minutes)</label>
+                <select id="meetingDuration">
+                    <option value="30">30</option>
+                    <option value="60">60</option>
+                    <option value="90">90</option>
+                    <option value="120">120</option>
+                </select>
+            </div>
+            
+            <button id="createMeetingBtn" class="btn">Create Meeting</button>
+        </div>
+        
+        <div id="meetingDetails" class="meeting-info hidden">
+            <h3>Your Meeting Details</h3>
+            <p><strong>Topic:</strong> <span id="displayTopic"></span></p>
+            <p><strong>When:</strong> <span id="displayTime"></span></p>
+            <p><strong>Duration:</strong> <span id="displayDuration"></span> minutes</p>
+            <a id="meetingLink" href="#" target="_blank" class="btn btn-join">Join Meeting</a>
+            <p>Meeting ID: <span id="meetingId"></span></p>
+            <p>Password: <span id="meetingPassword"></span></p>
+        </div>
+    </div>
+
+    <script>
+        // Basic Zoom Integration (without API)
+        document.addEventListener('DOMContentLoaded', function() {
+            const scheduleBtn = document.getElementById('scheduleBtn');
+            const startBtn = document.getElementById('startBtn');
+            const scheduleForm = document.getElementById('scheduleForm');
+            const meetingDetails = document.getElementById('meetingDetails');
+            const createMeetingBtn = document.getElementById('createMeetingBtn');
+            
+            // Replace with your actual Zoom meeting template
+            const zoomMeetingTemplate = {
+                joinUrl: 'https://us05web.zoom.us/j/81690187033?pwd=gK87pl0al4abMPbT9j5xaON3ruEuEL.1',
+                meetingId: '616 976 6993',
+                password: 'Nsvbb4'
+            };
+            
+            scheduleBtn.addEventListener('click', function() {
+                scheduleForm.classList.remove('hidden');
+                meetingDetails.classList.add('hidden');
+            });
+            
+            startBtn.addEventListener('click', function() {
+                // For instant meeting, we'll use a predefined link
+                const now = new Date();
+                const options = { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                };
+                
+                document.getElementById('displayTopic').textContent = 'Instant Meeting';
+                document.getElementById('displayTime').textContent = now.toLocaleDateString('en-US', options);
+                document.getElementById('displayDuration').textContent = '60';
+                document.getElementById('meetingLink').href = zoomMeetingTemplate.joinUrl;
+                document.getElementById('meetingId').textContent = zoomMeetingTemplate.meetingId;
+                document.getElementById('meetingPassword').textContent = zoomMeetingTemplate.password;
+                
+                scheduleForm.classList.add('hidden');
+                meetingDetails.classList.remove('hidden');
+            });
+            
+            createMeetingBtn.addEventListener('click', function() {
+                const topic = document.getElementById('meetingTopic').value || 'Team Meeting';
+                const date = document.getElementById('meetingDate').value;
+                const time = document.getElementById('meetingTime').value;
+                const duration = document.getElementById('meetingDuration').value;
+                
+                if (!date || !time) {
+                    alert('Please select date and time');
+                    return;
+                }
+                
+                const dateObj = new Date(`${date}T${time}`);
+                const options = { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                };
+                
+                document.getElementById('displayTopic').textContent = topic;
+                document.getElementById('displayTime').textContent = dateObj.toLocaleDateString('en-US', options);
+                document.getElementById('displayDuration').textContent = duration;
+                document.getElementById('meetingLink').href = zoomMeetingTemplate.joinUrl;
+                document.getElementById('meetingId').textContent = zoomMeetingTemplate.meetingId;
+                document.getElementById('meetingPassword').textContent = zoomMeetingTemplate.password;
+                
+                scheduleForm.classList.add('hidden');
+                meetingDetails.classList.remove('hidden');
+            });
+        });
+    </script>
+</body>
+</html>

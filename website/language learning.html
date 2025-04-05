@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educare</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+        }
+        
+        header {
+            background-color: #0563bc;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .languages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+        }
+        
+        .language-card {
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .language-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        
+        .flag-img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+        
+        .language-name {
+            padding: 20px;
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        /* Lesson Page Styles (hidden by default) */
+        .lesson-page {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            z-index: 100;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #025dcc;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .back-btn svg {
+            margin-right: 5px;
+        }
+        
+        .lesson-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .lesson-title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            height: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: #58cc02;
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .exercise-container {
+            background-color: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .word-display {
+            font-size: 36px;
+            text-align: center;
+            margin: 20px 0;
+            color: #333;
+            min-height: 50px;
+        }
+        
+        .pronunciation {
+            font-size: 20px;
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        /* Sentence display styles */
+        .sentence-container {
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .target-sentence {
+            font-size: 30px;
+            color: #333;
+            margin-bottom: 15px;
+            line-height: 1.4;
+            text-align: center;
+        }
+        
+        .sentence-translation {
+            font-size: 20px;
+            color: #58cc02;
+            font-weight: 500;
+            margin-top: 10px;
+            display: none; /* Hidden initially, shown after answering */
+        }
+        
+        .sentence-context {
+            background-color: #fff;
+            border-left: 4px solid #58cc02;
+            padding: 10px 15px;
+            margin: 15px 0;
+            font-size: 16px;
+            color: #666;
+            display: none; /* Hidden initially, shown after answering */
+        }
+        
+        /* Answer revealed state */
+        .answer-revealed .sentence-translation,
+        .answer-revealed .sentence-context {
+            display: block;
+        }
+        
+        .speak-btn {
+            background-color: #58cc02;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            font-size: 24px;
+            cursor: pointer;
+            margin: 20px auto;
+            display: block;
+            box-shadow: 0 4px 0 #3ca100;
+            transition: all 0.1s;
+        }
+        
+        .speak-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #3ca100;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .option-btn {
+            background-color: #f0f8ff;
+            border: 2px solid #58cc02;
+            border-radius: 15px;
+            padding: 15px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        
+        .option-btn:hover {
+            background-color: #e0f0ff;
+        }
+        
+        .option-btn.correct {
+            background-color: #58cc02;
+            color: white;
+        }
+        
+        .option-btn.incorrect {
+            background-color: #ff6b6b;
+            color: white;
+            border-color: #ff6b6b;
+        }
+        
+        .feedback {
+            font-size: 20px;
+            text-align: center;
+            margin: 20px 0;
+            min-height: 30px;
+        }
+        
+        .next-btn {
+            background-color: #58cc02;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 25px;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 20px auto 0;
+            display: block;
+            transition: all 0.2s;
+        }
+        
+        .next-btn:hover {
+            background-color: #4bb800;
+        }
+        
+        .character {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            background-image: url('https://cdn-icons-png.flaticon.com/512/1864/1864593.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        
+        .character.jump {
+            animation: jump 0.5s;
+        }
+        
+        @keyframes jump {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        /* Loading spinner */
+        .spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(0,0,0,.1);
+            border-radius: 50%;
+            border-top-color: #032dd2;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Settings modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .modal-btn.cancel {
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+        }
+        
+        .modal-btn.save {
+            background-color: #0323d4;
+            color: white;
+            border: none;
+        }
+        
+        /* Difficulty selector */
+        .difficulty-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        
+        .difficulty-btn {
+            padding: 8px 15px;
+            border-radius: 20px;
+            background-color: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .difficulty-btn.active {
+            background-color: #0569e3;
+            color: white;
+        }
+        
+        @media (max-width: 600px) {
+            .languages-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .language-card {
+                max-width: 300px;
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Homepage -->
+    <header>
+        <div class="logo">Educare.edu</div>
+        <button id="settings-btn" style="background: none; border: none; color: white; font-size: 20px;">⚙️</button>
+    </header>
+    
+    <div class="container" id="homepage">
+        <h1>Choose a language to learn</h1>
+        
+        <div class="difficulty-selector">
+            <button class="difficulty-btn active" data-level="beginner">Beginner</button>
+            <button class="difficulty-btn" data-level="intermediate">Intermediate</button>
+            <button class="difficulty-btn" data-level="advanced">Advanced</button>
+        </div>
+        
+        <div class="languages-grid">
+            <div class="language-card" data-lang="japanese">
+                <img src="https://flagcdn.com/w160/jp.jpg" alt="Japanese" class="flag-img">
+                <div class="language-name">Japanese</div>
+            </div>
+            
+            <div class="language-card" data-lang="french">
+                <img src="https://flagcdn.com/w160/fr.jpg" alt="French" class="flag-img">
+                <div class="language-name">French</div>
+            </div>
+            
+            <div class="language-card" data-lang="spanish">
+                <img src="https://flagcdn.com/w160/es.jpg" alt="Spanish" class="flag-img">
+                <div class="language-name">Spanish</div>
+            </div>
+            
+            <div class="language-card" data-lang="german">
+                <img src="https://flagcdn.com/w160/de.jpg" alt="German" class="flag-img">
+                <div class="language-name">German</div>
+            </div>
+            
+            <div class="language-card" data-lang="chinese">
+                <img src="https://flagcdn.com/w160/cn.jpg" alt="Chinese" class="flag-img">
+                <div class="language-name">Chinese</div>
+            </div>
+            
+            <div class="language-card" data-lang="hindi">
+                <img src="https://flagcdn.com/w160/in.jpg" alt="Hindi" class="flag-img">
+                <div class="language-name">Hindi</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Lesson Page (hidden by default) -->
+    <div class="lesson-page" id="lesson-page">
+        <button class="back-btn" id="back-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Back to languages
+        </button>
+        
+        <div class="lesson-header">
+            <div class="character" id="character"></div>
+            <h2 class="lesson-title" id="lesson-title">Loading Lesson...</h2>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progress"></div>
+        </div>
+        
+        <div class="exercise-container">
+            <div class="word-display" id="word-display">
+                <span class="spinner"></span> Generating content...
+            </div>
+            <div class="pronunciation" id="pronunciation"></div>
+            
+            <button class="speak-btn" id="speak-btn">🎤</button>
+            
+            <div class="feedback" id="feedback"></div>
+            
+            <div class="options" id="options">
+                <!-- Options will be added by JavaScript -->
+            </div>
+            
+            <button class="next-btn" id="next-btn" style="display: none;">Continue</button>
+        </div>
+    </div>
+    
+    <!-- Settings Modal -->
+    <div class="modal" id="settings-modal">
+        <div class="modal-content">
+            <h3 class="modal-title">Settings</h3>
+            
+            <div class="form-group">
+                <label for="api-key">OpenAI API Key</label>
+                <input type="password" id="api-key" placeholder="Enter your OpenAI API key">
+            </div>
+            
+            <div class="form-group">
+                <label for="questions-count">Questions per lesson</label>
+                <select id="questions-count">
+                    <option value="5">5</option>
+                    <option value="10" selected>10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="native-lang">Your native language</label>
+                <select id="native-lang">
+                    <option value="english">English</option>
+                    <option value="spanish">Spanish</option>
+                    <option value="french">French</option>
+                    <option value="german">German</option>
+                    <option value="japanese">Japanese</option>
+                    <option value="chinese">Chinese</option>
+                    <option value="hindi">Hindi</option>
+                </select>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn cancel" id="cancel-btn">Cancel</button>
+                <button class="modal-btn save" id="save-btn">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // App configuration
+        const config = {
+            apiKey: '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',
+            nativeLanguage: localStorage.getItem('native_language') || 'english',
+            questionsPerLesson: parseInt(localStorage.getItem('questions_per_lesson')) || 10,
+            difficulty: localStorage.getItem('difficulty') || 'beginner'
+        };
+        
+        // Supported languages with their codes for speech synthesis
+        const supportedLanguages = {
+            japanese: { name: "Japanese", code: "ja-JP", flag: "https://flagcdn.com/w160/jp.jpg" },
+            french: { name: "French", code: "fr-FR", flag: "https://flagcdn.com/w160/fr.jpg" },
+            spanish: { name: "Spanish", code: "es-ES", flag: "https://flagcdn.com/w160/es.jpg" },
+            german: { name: "German", code: "de-DE", flag: "https://flagcdn.com/w160/de.jpg" },
+            chinese: { name: "Chinese", code: "zh-CN", flag: "https://flagcdn.com/w160/cn.jpg" },
+            hindi: { name: "Hindi", code: "hi-IN", flag: "https://flagcdn.com/w160/in.jpg" },
+            english: { name: "English", code: "en-US", flag: "https://flagcdn.com/w160/gb.jpg" }
+        };
+        
+        // DOM elements
+        const homepage = document.getElementById('homepage');
+        const lessonPage = document.getElementById('lesson-page');
+        const backBtn = document.getElementById('back-btn');
+        const lessonTitle = document.getElementById('lesson-title');
+        const wordDisplay = document.getElementById('word-display');
+        const pronunciation = document.getElementById('pronunciation');
+        const speakBtn = document.getElementById('speak-btn');
+        const optionsContainer = document.getElementById('options');
+        const feedback = document.getElementById('feedback');
+        const nextBtn = document.getElementById('next-btn');
+        const progressBar = document.getElementById('progress');
+        const character = document.getElementById('character');
+        const settingsBtn = document.getElementById('settings-btn');
+        const settingsModal = document.getElementById('settings-modal');
+        const apiKeyInput = document.getElementById('api-key');
+        const questionsCountSelect = document.getElementById('questions-count');
+        const nativeLangSelect = document.getElementById('native-lang');
+        const saveBtn = document.getElementById('save-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const difficultyBtns = document.querySelectorAll('.difficulty-btn');
+        
+        // Initialize settings
+        apiKeyInput.value = config.apiKey;
+        questionsCountSelect.value = config.questionsPerLesson;
+        nativeLangSelect.value = config.nativeLanguage;
+        
+        // Set active difficulty button
+        difficultyBtns.forEach(btn => {
+            if (btn.dataset.level === config.difficulty) {
+                btn.classList.add('active');
+            }
+        });
+        
+        // Game state
+        let currentLanguage = '';
+        let currentLesson = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let totalQuestions = config.questionsPerLesson;
+        let questionsAnswered = 0;
+        
+        // Ensure voices are loaded
+        let voicesReady = false;
+        
+        function loadVoices() {
+            return new Promise(resolve => {
+                const voices = window.speechSynthesis.getVoices();
+                if (voices.length > 0) {
+                    voicesReady = true;
+                    resolve();
+                } else {
+                    window.speechSynthesis.onvoiceschanged = () => {
+                        voicesReady = true;
+                        resolve();
+                    };
+                }
+            });
+        }
+        
+        // Initialize voices
+        loadVoices();
+        
+        // Language selection
+        document.querySelectorAll('.language-card').forEach(card => {
+            card.addEventListener('click', () => {
+                if (!config.apiKey) {
+                    alert('Please set your OpenAI API key in settings first.');
+                    openSettings();
+                    return;
+                }
+                
+                currentLanguage = card.getAttribute('data-lang');
+                startLanguageLesson(currentLanguage);
+            });
+        });
+        
+        // Difficulty selection
+        difficultyBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                difficultyBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                config.difficulty = btn.dataset.level;
+                localStorage.setItem('difficulty', config.difficulty);
+            });
+        });
+        
+        // Start a language lesson
+        async function startLanguageLesson(lang) {
+            currentLanguage = lang;
+            lessonTitle.textContent = `Loading ${supportedLanguages[lang].name} Lesson...`;
+            homepage.style.display = 'none';
+            lessonPage.style.display = 'block';
+            
+            // Reset UI
+            wordDisplay.innerHTML = '<span class="spinner"></span> Generating content...';
+            pronunciation.textContent = '';
+            optionsContainer.innerHTML = '';
+            feedback.textContent = '';
+            nextBtn.style.display = 'none';
+            
+            // Reset game state
+            currentQuestionIndex = 0;
+            score = 0;
+            questionsAnswered = 0;
+            progressBar.style.width = '0%';
+            
+            try {
+                // Generate lesson content dynamically
+                currentLesson = await generateLessonContent(lang, config.difficulty, config.nativeLanguage);
+                showQuestion();
+            } catch (error) {
+                console.error('Error generating lesson:', error);
+                wordDisplay.textContent = 'Error generating lesson. Please try again.';
+                feedback.textContent = error.message;
+            }
+        }
+        
+        // Generate lesson content using OpenAI API
+        async function generateLessonContent(targetLanguage, difficulty, nativeLanguage) {
+            let prompt;
+            
+            if (difficulty === 'advanced') {
+                prompt = `Create an advanced-level language learning lesson for ${supportedLanguages[nativeLanguage].name} speakers learning ${supportedLanguages[targetLanguage].name}. 
+                Focus on complex sentences, advanced grammar structures, and idiomatic expressions.
+                Provide ${totalQuestions} complete complex sentences with their translations and pronunciations.
+                Each sentence should be challenging and suitable for advanced learners.
+                Format as JSON: [{"word":"(complex sentence)","translation":"(translation)","pronunciation":"(pronunciation guide)"}, ...]`;
+            } else if (difficulty === 'intermediate') {
+                prompt = `Create an intermediate-level language learning lesson for ${supportedLanguages[nativeLanguage].name} speakers learning ${supportedLanguages[targetLanguage].name}. 
+                Focus on complete sentences and useful everyday phrases.
+                Provide ${totalQuestions} sentences or phrases with their translations and pronunciations.
+                Format as JSON: [{"word":"(sentence or phrase)","translation":"(translation)","pronunciation":"(pronunciation guide)"}, ...]`;
+            } else {
+                prompt = `Create a beginner-level language learning lesson for ${supportedLanguages[nativeLanguage].name} speakers learning ${supportedLanguages[targetLanguage].name}. 
+                Focus on simple vocabulary items and basic phrases.
+                Provide ${totalQuestions} vocabulary items or phrases with their translations and pronunciations. 
+                Format as JSON: [{"word":"(word or simple phrase)","translation":"(translation)","pronunciation":"(pronunciation guide)"}, ...]`;
+            }
+            
+            const response = await callOpenAI(prompt);
+            
+            try {
+                // Try to extract JSON from the response
+                const jsonStart = response.indexOf('[');
+                const jsonEnd = response.lastIndexOf(']') + 1;
+                const jsonString = response.slice(jsonStart, jsonEnd);
+                return JSON.parse(jsonString);
+            } catch (e) {
+                console.error('Error parsing response:', e);
+                throw new Error('Failed to generate lesson content. Please try again.');
+            }
+        }
+        
+        // Call OpenAI API
+        async function callOpenAI(prompt) {
+            if (!config.apiKey) {
+                throw new Error('OpenAI API key not set');
+            }
+            
+            try {
+                const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${config.apiKey}`,
+                        'HTTP-Referer': window.location.href,
+                        'X-Title': 'Polyglot AI Language Learning'
+                    },
+                    body: JSON.stringify({
+                        model: "openai/gpt-3.5-turbo",
+                        messages: [
+                            {
+                                role: "system",
+                                content: "You are a professional language learning content creator specializing in creating high-quality, educational content for language learners at different levels. For advanced levels, focus on complex grammatical structures, idiomatic expressions, and challenging vocabulary in complete sentences. For intermediate levels, focus on practical sentences and useful phrases. For beginners, focus on simple vocabulary and basic expressions. Always provide accurate translations and clear pronunciation guides. Respond in valid JSON format only."
+                            },
+                            {
+                                role: "user",
+                                content: prompt
+                            }
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 2000
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('API Error:', errorData);
+                    throw new Error(errorData.error?.message || 'API request failed');
+                }
+                
+                const data = await response.json();
+                return data.choices[0].message.content;
+            } catch (error) {
+                console.error('API call error:', error);
+                throw new Error('Failed to communicate with API: ' + error.message);
+            }
+        }
+        
+        // Show a question
+        function showQuestion() {
+            if (!currentLesson || currentQuestionIndex >= currentLesson.length) {
+                endLesson();
+                return;
+            }
+            
+            const currentQuestion = currentLesson[currentQuestionIndex];
+            
+            // Update UI
+            lessonTitle.textContent = `${supportedLanguages[currentLanguage].name} Lesson`;
+            
+            // Update display format for sentences
+            if (config.difficulty === 'advanced' || config.difficulty === 'intermediate') {
+                // Format for sentences - structured display
+                const sentenceDisplay = `
+                    <div class="sentence-container">
+                        <div class="target-sentence">${currentQuestion.word}</div>
+                        <div class="pronunciation">${currentQuestion.pronunciation}</div>
+                    </div>
+                `;
+                wordDisplay.innerHTML = sentenceDisplay;
+            } else {
+                // Simple display for vocabulary
+                wordDisplay.textContent = currentQuestion.word;
+                pronunciation.textContent = currentQuestion.pronunciation;
+            }
+            
+            // Clear previous options
+            optionsContainer.innerHTML = '';
+            
+            // Create correct answer and some wrong answers
+            const correctAnswer = currentQuestion.translation;
+            let options = [correctAnswer];
+            
+            // Add wrong answers from other questions
+            for (let i = 0; i < 3 && i < currentLesson.length; i++) {
+                const randomIndex = Math.floor(Math.random() * currentLesson.length);
+                if (randomIndex !== currentQuestionIndex && !options.includes(currentLesson[randomIndex].translation)) {
+                    options.push(currentLesson[randomIndex].translation);
+                }
+            }
+            
+            // If we still don't have enough options, add generic ones
+            while (options.length < 4) {
+                options.push(`Option ${options.length + 1}`);
+            }
+            
+            // Shuffle options
+            options = shuffleArray(options);
+            
+            // Create option buttons
+            options.forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'option-btn';
+                button.textContent = option;
+                button.addEventListener('click', () => checkAnswer(option, correctAnswer));
+                optionsContainer.appendChild(button);
+            });
+            
+            // Reset UI
+            feedback.textContent = '';
+            nextBtn.style.display = 'none';
+        }
+        
+        // Check the selected answer
+        function checkAnswer(selected, correct) {
+            const optionButtons = document.querySelectorAll('.option-btn');
+            
+            // Disable all buttons
+            optionButtons.forEach(btn => {
+                btn.disabled = true;
+                if (btn.textContent === correct) {
+                    btn.classList.add('correct');
+                }
+                if (btn.textContent === selected && selected !== correct) {
+                    btn.classList.add('incorrect');
+                }
+            });
+            
+            // Give feedback
+            if (selected === correct) {
+                feedback.textContent = "Correct! 🎉";
+                feedback.style.color = "#58cc02";
+                score++;
+                character.classList.add('jump');
+                setTimeout(() => character.classList.remove('jump'), 500);
+            } else {
+                feedback.textContent = `Incorrect. The correct answer is ${correct}.`;
+                feedback.style.color = "#ff6b6b";
+            }
+            
+            questionsAnswered++;
+            updateProgress();
+            
+            // Show next button
+            nextBtn.style.display = 'block';
+            currentQuestionIndex++;
+        }
+        
+        // Update progress bar
+        function updateProgress() {
+            const progress = (questionsAnswered / totalQuestions) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+        
+        // Next question or end game
+        function nextQuestion() {
+            if (questionsAnswered >= totalQuestions) {
+                endLesson();
+                return;
+            }
+            
+            showQuestion();
+        }
+        
+        // End the lesson
+        function endLesson() {
+            wordDisplay.textContent = `Lesson Complete!`;
+            pronunciation.textContent = `You scored ${score}/${totalQuestions}`;
+            optionsContainer.innerHTML = '';
+            feedback.textContent = '';
+            nextBtn.style.display = 'none';
+            
+            // Add restart button
+            const restartBtn = document.createElement('button');
+            restartBtn.className = 'next-btn';
+            restartBtn.textContent = 'Practice Again';
+            restartBtn.style.display = 'block';
+            restartBtn.addEventListener('click', () => {
+                score = 0;
+                questionsAnswered = 0;
+                currentQuestionIndex = 0;
+                progressBar.style.width = '0%';
+                showQuestion();
+            });
+            
+            optionsContainer.appendChild(restartBtn);
+        }
+        
+        // Text-to-speech for pronunciation
+        speakBtn.addEventListener('click', async () => {
+            if (!currentLesson || currentQuestionIndex >= currentLesson.length) return;
+            
+            const currentQuestion = currentLesson[currentQuestionIndex];
+            
+            // Check if speech synthesis is available
+            if (!('speechSynthesis' in window)) {
+                feedback.textContent = "Text-to-speech not supported in your browser";
+                feedback.style.color = "#ff6b6b";
+                return;
+            }
+
+            // Wait for voices to be loaded
+            if (!voicesReady) {
+                await loadVoices();
+            }
+            
+            // Cancel any ongoing speech
+            window.speechSynthesis.cancel();
+            
+            // Create the utterance with the pronunciation text
+            const utterance = new SpeechSynthesisUtterance(currentQuestion.pronunciation);
+            
+            // Set language based on selected language
+            utterance.lang = supportedLanguages[currentLanguage].code;
+            
+            // Try to find a matching voice
+            const voices = window.speechSynthesis.getVoices();
+            const preferredVoice = voices.find(voice => voice.lang === supportedLanguages[currentLanguage].code);
+            
+            if (preferredVoice) {
+                utterance.voice = preferredVoice;
+            } else {
+                // Fallback to any available voice
+                utterance.voice = voices[0];
+            }
+            
+            // Speak the text
+            window.speechSynthesis.speak(utterance);
+            
+            // Error handling
+            utterance.onerror = (event) => {
+                feedback.textContent = "Error with speech synthesis";
+                feedback.style.color = "#ff6b6b";
+            };
+        });
+        
+        // Next button event
+        nextBtn.addEventListener('click', nextQuestion);
+        
+        // Back button event
+        backBtn.addEventListener('click', () => {
+            lessonPage.style.display = 'none';
+            homepage.style.display = 'block';
+        });
+        
+        // Settings modal
+        function openSettings() {
+            settingsModal.style.display = 'flex';
+        }
+        
+        function closeSettings() {
+            settingsModal.style.display = 'none';
+        }
+        
+        settingsBtn.addEventListener('click', openSettings);
+        cancelBtn.addEventListener('click', closeSettings);
+        
+        saveBtn.addEventListener('click', () => {
+            config.apiKey = apiKeyInput.value.trim();
+            config.questionsPerLesson = parseInt(questionsCountSelect.value);
+            config.nativeLanguage = nativeLangSelect.value;
+            
+            // Save to localStorage
+            localStorage.setItem('openai_api_key', config.apiKey);
+            localStorage.setItem('questions_per_lesson', config.questionsPerLesson);
+            localStorage.setItem('native_language', config.nativeLanguage);
+            
+            totalQuestions = config.questionsPerLesson;
+            closeSettings();
+        });
+        
+        // Close modal when clicking outside
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                closeSettings();
+            }
+        });
+        
+        // Helper function to shuffle array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+    </script>
+</body>
+</html>

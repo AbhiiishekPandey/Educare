@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Speech to Text Converter</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            max-width: 500px;
+            width: 100%;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: #4285F4;
+            margin-bottom: 25px;
+        }
+        
+        .speech-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            resize: none;
+            outline: none;
+            margin-bottom: 20px;
+            transition: border 0.3s;
+        }
+        
+        textarea:focus {
+            border-color: #4285F4;
+        }
+        
+        .mic-button {
+            background: #4285F4;
+            color: white;
+            border: none;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(66, 133, 244, 0.3);
+            margin: 15px 0;
+        }
+        
+        .mic-button:hover {
+            background: #3367D6;
+            transform: scale(1.05);
+        }
+        
+        .mic-button.listening {
+            background: #EA4335;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(234, 67, 53, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(234, 67, 53, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(234, 67, 53, 0);
+            }
+        }
+        
+        .status {
+            margin-top: 15px;
+            font-size: 16px;
+            color: #666;
+            min-height: 24px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .action-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .speak-button {
+            background: #34A853;
+            color: white;
+        }
+        
+        .speak-button:hover {
+            background: #2D8E47;
+        }
+        
+        .clear-button {
+            background: #EA4335;
+            color: white;
+        }
+        
+        .clear-button:hover {
+            background: #D33426;
+        }
+        
+        .language-selector {
+            margin-bottom: 20px;
+        }
+        
+        select {
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid #e0e0e0;
+            outline: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Enhanced Speech to Text Converter</h2>
+
+        <div class="language-selector">
+            <select id="languageSelect">
+                <option value="en-US">English (US)</option>
+                <option value="en-GB">English (UK)</option>
+                <option value="es-ES">Spanish</option>
+                <option value="fr-FR">French</option>
+                <option value="de-DE">German</option>
+                <option value="it-IT">Italian</option>
+                <option value="pt-BR">Portuguese</option>
+                <option value="ru-RU">Russian</option>
+                <option value="ja-JP">Japanese</option>
+                <option value="zh-CN">Chinese</option>
+                <option value="hi-IN">Hindi</option>
+            </select>
+        </div>
+
+        <div class="speech-box">
+            <textarea id="output" placeholder="Your transcribed text will appear here..."></textarea>
+
+            <button id="micButton" class="mic-button">🎤</button>
+
+            <p class="status" id="statusMessage">Click the microphone to start speaking</p>
+        </div>
+
+        <div class="action-buttons">
+            <button id="speakButton" class="action-button speak-button">🔊 Play Text</button>
+            <button id="clearButton" class="action-button clear-button">❌ Clear</button>
+            <button id="copyButton" class="action-button" style="background: #FBBC05; color: white;">⎘ Copy</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const micButton = document.getElementById("micButton");
+            const speakButton = document.getElementById("speakButton");
+            const clearButton = document.getElementById("clearButton");
+            const copyButton = document.getElementById("copyButton");
+            const output = document.getElementById("output");
+            const statusMessage = document.getElementById("statusMessage");
+            const languageSelect = document.getElementById("languageSelect");
+
+            let recognition;
+            let isListening = false;
+            let finalTranscript = '';
+            let timeoutId;
+
+            // Initialize speech recognition
+            function initSpeechRecognition() {
+                if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                    showError("Speech recognition not supported in your browser. Try Chrome or Edge.");
+                    micButton.disabled = true;
+                    return;
+                }
+
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = languageSelect.value;
+
+                recognition.onstart = function() {
+                    isListening = true;
+                    micButton.classList.add('listening');
+                    statusMessage.textContent = "Listening... Speak now";
+                    statusMessage.style.color = "#4285F4";
+                    finalTranscript = '';
+                };
+
+                recognition.onresult = function(event) {
+                    let interimTranscript = '';
+
+                    // Reset the timeout each time we get results
+                    resetInactivityTimeout();
+
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const transcript = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalTranscript += transcript + ' ';
+                        } else {
+                            interimTranscript += transcript;
+                        }
+                    }
+
+                    output.value = finalTranscript + interimTranscript;
+
+                    if (finalTranscript) {
+                        statusMessage.textContent = "Speech recognized!";
+                        statusMessage.style.color = "#34A853";
+                    }
+                };
+
+                recognition.onerror = function(event) {
+                    console.error('Speech recognition error', event.error);
+                    stopListening();
+
+                    let message = 'Error occurred: ';
+                    switch (event.error) {
+                        case 'no-speech':
+                            message = 'No speech detected. Try again.';
+                            break;
+                        case 'audio-capture':
+                            message = 'No microphone found. Ensure microphone is connected.';
+                            break;
+                        case 'not-allowed':
+                            message = 'Microphone access denied. Please allow microphone access.';
+                            break;
+                        case 'aborted':
+                            // Don't show message for aborted (user stopped)
+                            return;
+                        default:
+                            message += event.error;
+                    }
+
+                    showError(message);
+                };
+
+                recognition.onend = function() {
+                    if (isListening) {
+                        // If still listening but recognition ended, restart it
+                        try {
+                            recognition.start();
+                        } catch (e) {
+                            console.error('Error restarting recognition:', e);
+                            stopListening();
+                            showError("Error restarting speech recognition. Please try again.");
+                        }
+                    }
+                };
+            }
+
+            // Initialize on page load
+            initSpeechRecognition();
+
+            // Handle language change
+            languageSelect.addEventListener('change', function() {
+                if (recognition) {
+                    recognition.lang = this.value;
+                    if (isListening) {
+                        stopListening();
+                        startListening();
+                    }
+                }
+            });
+
+            // Mic button click handler
+            micButton.addEventListener("click", function() {
+                if (isListening) {
+                    stopListening();
+                } else {
+                    startListening();
+                }
+            });
+
+            function startListening() {
+                output.value = "";
+                try {
+                    recognition.lang = languageSelect.value;
+                    recognition.start();
+                } catch (e) {
+                    console.error('Error starting recognition:', e);
+                    showError("Error starting speech recognition. Please try again.");
+                }
+            }
+
+            function stopListening() {
+                isListening = false;
+                micButton.classList.remove('listening');
+                statusMessage.textContent = "Ready to listen again";
+                statusMessage.style.color = "#666";
+
+                if (recognition) {
+                    try {
+                        recognition.stop();
+                    } catch (e) {
+                        console.error('Error stopping recognition:', e);
+                    }
+                }
+
+                clearTimeout(timeoutId);
+            }
+
+            function resetInactivityTimeout() {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => {
+                    if (isListening && finalTranscript === '') {
+                        showError("No speech detected. Try speaking louder or closer to the microphone.");
+                        stopListening();
+                    }
+                }, 5000); // 5 seconds of inactivity
+            }
+
+            function showError(message) {
+                statusMessage.textContent = message;
+                statusMessage.style.color = "#EA4335";
+            }
+
+            // Text-to-speech functionality
+            speakButton.addEventListener("click", function() {
+                if (output.value.trim() !== "") {
+                    if (speechSynthesis.speaking) {
+                        speechSynthesis.cancel();
+                    }
+
+                    const speech = new SpeechSynthesisUtterance(output.value);
+                    speech.lang = languageSelect.value;
+
+                    speech.onstart = function() {
+                        statusMessage.textContent = "Playing back your text...";
+                        statusMessage.style.color = "#FBBC05";
+                    };
+
+                    speech.onend = function() {
+                        statusMessage.textContent = "Ready to listen again";
+                        statusMessage.style.color = "#666";
+                    };
+
+                    speech.onerror = function(event) {
+                        showError("Error during speech playback: " + event.error);
+                    };
+
+                    window.speechSynthesis.speak(speech);
+                }
+            });
+
+            // Clear functionality
+            clearButton.addEventListener("click", function() {
+                output.value = "";
+                statusMessage.textContent = "Click the microphone to start speaking";
+                statusMessage.style.color = "#666";
+            });
+
+            // Copy functionality
+            copyButton.addEventListener("click", function() {
+                if (output.value.trim() !== "") {
+                    output.select();
+                    document.execCommand('copy');
+
+                    // Visual feedback
+                    const originalText = copyButton.textContent;
+                    copyButton.textContent = "✓ Copied!";
+                    copyButton.style.background = "#34A853";
+
+                    setTimeout(() => {
+                        copyButton.textContent = originalText;
+                        copyButton.style.background = "#FBBC05";
+                    }, 2000);
+                }
+            });
+        });
+    </script>
+</body>
+
+</html> 

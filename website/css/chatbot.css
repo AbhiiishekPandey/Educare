@@ -1,0 +1,47 @@
+/* Chatbot Styles */
+#chatbot-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 350px;
+    height: 500px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(67, 97, 238, 0.15);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.3s ease forwards;
+    /* Start minimized by default */
+    height: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#chatbot-container.minimized {
+    height: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#chatbot-container.hidden {
+    display: none;
+}
+
+/* Animation for chatbot appearance */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Rest of the existing chatbot CSS */
+// ... existing code ... 

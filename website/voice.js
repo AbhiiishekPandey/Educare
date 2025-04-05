@@ -190,4 +190,104 @@ document.getElementById('voiceAssistantModal').addEventListener('hidden.bs.modal
     // Reset button state
     speechButton.classList.remove('recording');
     speechButton.innerHTML = '<i class="fas fa-microphone"></i>';
-}); 
+});
+
+// Add Smart Home Assistant button handler
+const smartHomeBtn = document.getElementById("smartHomeBtn");
+const smartHomeModal = new bootstrap.Modal(document.getElementById('smartHomeModal'));
+
+smartHomeBtn.addEventListener("click", function(e) {
+    e.preventDefault();
+    smartHomeModal.show();
+    initializeSmartHome();
+});
+
+function initializeSmartHome() {
+    updateClock();
+    generateSchedule();
+    // Reset any existing tasks
+    currentTaskIndex = 0;
+}
+
+// Add Smart Home functionality
+let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+let subjects = ["Math", "Science", "History", "English", "Geography", "Physics", "Chemistry"];
+let currentTaskIndex = 0;
+let studyStartTime = 19; // 7 PM
+let studyEndTime = 21; // 9 PM
+
+function updateClock() {
+    let now = new Date();
+    let hours = now.getHours().toString().padStart(2, '0');
+    let minutes = now.getMinutes().toString().padStart(2, '0');
+    let seconds = now.getSeconds().toString().padStart(2, '0');
+    document.getElementById('clock').innerText = `Current Time: ${hours}:${minutes}:${seconds}`;
+}
+
+// Add Smart Home Assistant functionality
+function openSmartHomeAssistant() {
+    const modalContent = `
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">📅 AfterSchool AI Planner</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <p>Smart study planner for students (Grades 5-10)</p>
+                        
+                        <div id="clock"></div>
+                        
+                        <div class="input-group mb-3">
+                            <input type="text" id="taskInput" class="form-control" placeholder="Enter your task">
+                            <button class="btn btn-primary" onclick="addTask()">Add Task</button>
+                        </div>
+                        
+                        <h5 class="mb-3">Your AI-Generated Schedule (7PM - 9PM)</h5>
+                        <div id="schedule"></div>
+                        <div class="btn-group mt-3">
+                            <button class="btn btn-primary" onclick="generateSchedule()">✨ Generate Smart Schedule</button>
+                            <button class="btn btn-success" onclick="startSchedule()">▶ Start Schedule</button>
+                            <button class="btn btn-info" onclick="suggestStudySubject()">🧠 AI Suggests Subject</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    const smartHomeModal = document.createElement('div');
+    smartHomeModal.className = 'modal fade';
+    smartHomeModal.id = 'smartHomeModal';
+    smartHomeModal.innerHTML = modalContent;
+    document.body.appendChild(smartHomeModal);
+
+    const modal = new bootstrap.Modal(smartHomeModal);
+    modal.show();
+
+    // Initialize clock and schedule
+    updateClock();
+    setInterval(updateClock, 1000);
+    generateSchedule();
+}
+
+// Add this to your service section HTML
+const serviceSection = `
+<div class="service-box smart-home-service" onclick="openSmartHomeAssistant()">
+    <div class="service-icon">
+        <i class="fas fa-robot"></i>
+    </div>
+    <h3>Smart Home Assistant</h3>
+    <p>Your personal AI study companion that helps you manage your learning schedule, set reminders, and get instant answers to your questions.</p>
+</div>
+`;
+
+// Add event listener when document is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click handler for the service box
+    const smartHomeService = document.querySelector('.smart-home-service');
+    if (smartHomeService) {
+        smartHomeService.addEventListener('click', openSmartHomeAssistant);
+    }
+});

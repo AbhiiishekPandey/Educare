@@ -1,0 +1,34 @@
+{
+  "name": "educare",
+  "version": "1.0.0",
+  "description": "AI-powered educational platform for personalized learning experiences",
+  "main": "website/js/server.js",
+  "scripts": {
+    "start": "node website/js/server.js",
+    "dev": "nodemon website/js/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/educare.git"
+  },
+  "keywords": [
+    "education",
+    "learning",
+    "ai",
+    "platform",
+    "online-learning"
+  ],
+  "author": "Educare Team",
+  "license": "MIT"
+} 

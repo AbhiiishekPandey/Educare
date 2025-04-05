@@ -5,6 +5,7 @@ const multer = require('multer');
 const pdfParse = require('pdf-parse');
 const axios = require('axios');
 const path = require('path');
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -26,26 +27,35 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Routes
-app.post('/api/ask', async (req, res) => {
-    try {
-        const { prompt } = req.body;
-        const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-            model: "gpt-3.5-turbo",
-            messages: [{ role: "user", content: prompt }],
-            temperature: 0.7,
-            max_tokens: 1000
-        }, {
-            headers: {
-                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-                'Content-Type': 'application/json'
-            }
-        });
+// Initialize Gemini
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-        res.json(response.data);
+// Routes
+app.post('/api/chat', async (req, res) => {
+    try {
+        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        const chat = model.startChat();
+        const result = await chat.sendMessage(req.body.message);
+        const response = await result.response;
+        
+        res.json({ reply: response.text() });
     } catch (error) {
-        console.error('Error:', error.response?.data || error.message);
-        res.status(500).json({ error: 'Failed to get response from AI' });
+        console.error('Error:', error);
+        res.status(500).json({ error: 'An error occurred while processing your request' });
+    }
+});
+
+app.post('/api/translate', async (req, res) => {
+    try {
+        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        const prompt = `Translate the following text from ${req.body.fromLanguage} to ${req.body.toLanguage}: ${req.body.text}`;
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        
+        res.json({ translation: response.text() });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'An error occurred while processing your request' });
     }
 });
 
@@ -92,4 +102,47 @@ if (!fs.existsSync('uploads')) {
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
+}); 
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+
+const server = http.createServer((req, res) => {
+    let filePath = '.' + req.url;
+    if (filePath === './') {
+        filePath = './index.html';
+    }
+
+    const extname = path.extname(filePath);
+    let contentType = 'text/html';
+    
+    switch (extname) {
+        case '.js':
+            contentType = 'text/javascript';
+            break;
+        case '.css':
+            contentType = 'text/css';
+            break;
+    }
+
+    fs.readFile(filePath, (error, content) => {
+        if (error) {
+            if(error.code === 'ENOENT') {
+                res.writeHead(404);
+                res.end('File not found');
+            } else {
+                res.writeHead(500);
+                res.end('Server Error: ' + error.code);
+            }
+        } else {
+            res.writeHead(200, { 'Content-Type': contentType });
+            res.end(content, 'utf-8');
+        }
+    });
+});
+
+const PORT = 8080;
+server.listen(PORT, '127.0.0.1', () => {
+    console.log(`Server running at http://127.0.0.1:${PORT}/`);
+    console.log('Press Ctrl+C to stop the server');
 }); 

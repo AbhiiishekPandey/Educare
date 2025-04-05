@@ -24,9 +24,9 @@ cd educare
 npm install
 ```
 
-3. Create a `.env` file in the root directory and add your OpenAI API key:
-```
-OPENAI_API_KEY=your_api_key_here
+3. Create a `.env` file in the root directory and add your Gemini API key:
+```env
+GEMINI_API_KEY=your_api_key_here
 ```
 
 4. Start the server:
@@ -43,7 +43,7 @@ http://localhost:3000
 
 The following environment variables are required:
 
-- `OPENAI_API_KEY`: Your OpenAI API key
+- `GEMINI_API_KEY`: Your Gemini API key
 - `PORT`: (Optional) Port number for the server (default: 3000)
 
 ## Security Note

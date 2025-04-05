@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Based Translator & Language Learning - Educare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light);
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            color: var(--dark);
+            display: block;
+        }
+
+        .section-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .icon {
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .icon img {
+            width: 30px;
+            height: 30px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin: 0 0 15px 0;
+            color: var(--dark);
+        }
+
+        p {
+            font-size: 1rem;
+            color: #666;
+            margin: 0 0 20px 0;
+            line-height: 1.5;
+        }
+
+        .learn-more {
+            display: inline-block;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .learn-more:hover {
+            color: var(--secondary);
+        }
+    </style>
+</head>
+<body>
+    <a href="language-learning.html" class="section-card">
+        <div class="icon">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxwYXRoIGQ9Ik0yMCA0aC05LjVhMi41IDIuNSAwIDAgMC0yLjUgMi41VjE4YTIuNSAyLjUgMCAwIDAgMi41IDIuNUgyMGEyLjUgMi41IDAgMCAwIDIuNS0yLjVWNi41QTIuNSAyLjUgMCAwIDAgMjAgNHptLTkuNSAxNGEuNS41IDAgMCAxLS41LS41VjYuNWEuNS41IDAgMCAxIC41LS41SDIwYS41LjUgMCAwIDEgLjUuNVYxOGEuNS41IDAgMCAxLS41LjVoLTkuNXoiLz48cGF0aCBkPSJNMTIuNSA3LjVoNnYyaC02ek0xMi41IDExLjVoNnYyaC02ek0xMi41IDE1LjVoNHYyaC00eiIvPjwvc3ZnPg==" alt="Translator Icon">
+        </div>
+        <h2>AI-Based Translator & Language Learning</h2>
+        <p>Advanced language learning tools with real-time translation and personalized language practice sessions.</p>
+        <span class="learn-more">Learn More →</span>
+    </a>
+
+    <script>
+        document.querySelector('.section-card').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = 'language-learning.html';
+        });
+    </script>
+</body>
+</html> 

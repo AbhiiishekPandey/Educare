@@ -1,5 +1,10 @@
 {
-  "buildCommand": "echo 'No build needed'",
+  "buildCommand": "npm install",
+  "framework": null,
   "outputDirectory": "website",
-  "installCommand": "npm install"
+  "functions": {
+    "api/**/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
 }

@@ -1,23 +1,27 @@
 {
-  "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "api/index.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/index.js"
+      "source": "/api/:path*",
+      "destination": "/api/index.js"
     },
     {
-      "src": "/(.*)",
-      "dest": "/website/$1"
+      "source": "/:path*",
+      "destination": "/website/:path*"
+    },
+    {
+      "source": "/",
+      "destination": "/website/index.html"
     }
   ],
-  "outputDirectory": "website",
-  "env": {
-    "NODE_ENV": "production"
-  }
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
+        }
+      ]
+    }
+  ]
 }

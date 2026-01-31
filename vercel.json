@@ -1,7 +1,4 @@
 {
-  "buildCommand": "npm install",
-  "framework": null,
-  "outputDirectory": "website",
   "functions": {
     "api/**/*.js": {
       "runtime": "nodejs18.x"

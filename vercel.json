@@ -1,27 +1,5 @@
 {
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "/api/index.js"
-    },
-    {
-      "source": "/:path*",
-      "destination": "/website/:path*"
-    },
-    {
-      "source": "/",
-      "destination": "/website/index.html"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=3600, must-revalidate"
-        }
-      ]
-    }
-  ]
+  "buildCommand": "echo 'No build needed'",
+  "outputDirectory": "website",
+  "installCommand": "npm install"
 }
